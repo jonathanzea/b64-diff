@@ -1,6 +1,7 @@
 package com.waes.controller;
 
 import com.waes.dto.DiffResponse;
+import com.waes.dto.NodeDto;
 import com.waes.service.B64Service;
 import org.omg.CORBA.portable.ValueOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @RestController
 public class B64Controller {
@@ -38,6 +40,10 @@ public class B64Controller {
         return ResponseEntity.ok(b64Service.compareNodeDataById(id));
     }
 
+    @GetMapping(path = "/v1/diff/nodes")
+    public ResponseEntity<List<NodeDto>> retrieveNodes() {
+        return ResponseEntity.ok(b64Service.retrieveNodes());
+    }
 
     @DeleteMapping(path = "/v1/diff/clear")
     public ResponseEntity<Void> clearNodesMap() {

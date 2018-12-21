@@ -2,6 +2,8 @@
 
 JSON Base 64 encoded comparator service. With this API you will be able to register
 JSON pairs encoded in Base 64 (https://www.base64encode.org/) and then compare  their decoded content.
+The API consist in **3 principal endpoints** (add left data, add right data, and compare them) and **2 
+extra enpoints** (Retrieve the existing nodes and clear/delete de added nodes)
 
 This project is made with **Java 8, Maven and Springboot**. The persistence of the JSON pairs
  is achieved through a **Map in memory**. 
@@ -113,7 +115,36 @@ METHOD: GET
 return **HTTP 409**
 - If the Node does not exist the endpoint will return **HTTP 404**
 
-## 4 (extra) - Clear all nodes
+## 4 (extra) - Retrieve the added nodes
+Get endpoint that retrieves the existing nodes in memory. This will allow you
+to check if a node is enough populated to compare its data.
+
+`/v1/diff/nodes`
+
+- **Request Example**
+
+```
+http://localhost:8080/v1/diff/nodes
+METHOD: GET
+```
+- **Response Example**
+```json
+    [
+        {
+            "nodeId": 1,
+            "rightData": "POPULATED",
+            "leftData": "EMPTY"
+        },
+        {
+            "nodeId": 2,
+            "rightData": "EMPTY",
+            "leftData": "POPULATED"
+        }
+    ]
+
+```
+    
+## 5 (extra) - Clear all nodes
 DELETE endpoint that delete all the data added.
 
 `/v1/diff/clear`

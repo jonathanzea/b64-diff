@@ -13,8 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -167,6 +166,21 @@ public class ApplicationIntegrationTest {
                         .content(base64Json))
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.is("NodeNotExistsException")));
+    }
+
+    @Test
+    public void testRetrieveNodes() throws Exception {
+        mockMvc.perform(
+                get("/v1/diff/nodes"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testClearNodes() throws Exception {
+
+        mockMvc.perform(
+                delete("/v1/diff/clear"))
+                .andExpect(status().isOk());
     }
 
 }

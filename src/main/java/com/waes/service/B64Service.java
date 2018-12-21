@@ -1,6 +1,7 @@
 package com.waes.service;
 
 import com.waes.dto.DiffResponse;
+import com.waes.dto.NodeDto;
 import com.waes.exception.EmptyDataForNodeException;
 import com.waes.exception.JsonMalformedException;
 import com.waes.exception.NodeDataAlreadyAddedException;
@@ -13,11 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public final class B64Service {
 
+    private static final String EQUAL_DATA_MESSAGE = "EQUAL DATA";
+    private static final String DIFFERENT_DATA_MESSAGE = "DIFFERENT DATA";
     private final NodesRepository nodesRepository;
     private static final String CHAR_SET_NAME = "utf-8";
 
@@ -25,7 +30,6 @@ public final class B64Service {
     public B64Service(NodesRepository nodesRepository){
         this.nodesRepository = nodesRepository;
     }
-
 
     public void registerLeftNodeData(final String jsonBase64Binary, final Long id) {
         String decodedJsonString = decodeAndCheck(jsonBase64Binary);
@@ -53,10 +57,6 @@ public final class B64Service {
         } else {
             throw new NodeDataAlreadyAddedException("Right data for node id: {} already added. Please Add a new node.");
         }
-    }
-
-    public void clearNodesMap() {
-        nodesRepository.clearNodeMap();
     }
 
     public String decodeAndCheck(final String jsonBase64Binary) {
@@ -95,9 +95,24 @@ public final class B64Service {
     public DiffResponse compareNodeDataById(final Long id) {
         Node node = nodesRepository.findNodeById(id);
         if (node.hasEqualData()) {
-            return DiffResponseFactory.buildForEqualData("EQUAL DATA");
+            return DiffResponseFactory.buildForEqualData(EQUAL_DATA_MESSAGE);
         } else {
-            return DiffResponseFactory.buildForDifferentData("DIFFERENT DATA", node);
+            return DiffResponseFactory.buildForDifferentData(DIFFERENT_DATA_MESSAGE, node);
         }
+    }
+
+    public List<NodeDto> retrieveNodes() {
+        List<NodeDto> nodeDtoList = new ArrayList<>();
+
+        nodesRepository.retrieveNodes().forEach((id,node)->{
+            NodeDto nodeDto = new NodeDto();
+            nodeDto.configureDetail(id,node);
+            nodeDtoList.add(nodeDto);
+        });
+        return nodeDtoList;
+    }
+
+    public void clearNodesMap() {
+        nodesRepository.clearNodeMap();
     }
 }

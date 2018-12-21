@@ -48,4 +48,8 @@ public final class NodesRepository {
     public void clearNodeMap() {
         nodesMap.clear();
     }
+
+    public Map<Long, Node> retrieveNodes() {
+        return new ConcurrentHashMap<>(nodesMap);
+    }
 }

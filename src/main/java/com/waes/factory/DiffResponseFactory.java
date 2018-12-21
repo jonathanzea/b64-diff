@@ -9,7 +9,7 @@ public final class DiffResponseFactory {
 
     public static final DiffResponseDetail buildForDifferentData(String message, Node node) {
         JSONCompareResult l = node.getDifferences();
-        String messageDetail = l.getMessage();
+        String messageDetail = l.getMessage().replaceAll("\\r\\n", "");
         DiffResponseDetail someResponse = new DiffResponseDetail(message, messageDetail);
         return someResponse;
     }

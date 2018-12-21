@@ -1,5 +1,6 @@
 package com.waes.service;
 
+import com.waes.dto.NodeDto;
 import com.waes.exception.EmptyDataForNodeException;
 import com.waes.exception.JsonMalformedException;
 import com.waes.exception.NodeDataAlreadyAddedException;
@@ -12,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+
+import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -98,7 +101,17 @@ public class B64ServiceTest {
         assertThat(node.hasRightData());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
+    public void testRetrieveNodes() {
+        b64Service.registerRightNodeData(encodedJson, 7l);
+        b64Service.registerLeftNodeData(encodedJson, 7l);
+
+        List<NodeDto> nodes = b64Service.retrieveNodes();
+        assertThat(nodes).isNotNull();
+        assertThat(nodes).isNotEmpty();
+    }
+
+    @Test
     public void testClearNodes() {
         b64Service.registerRightNodeData(encodedJson, 3l);
         b64Service.registerLeftNodeData(encodedJson, 3l);
@@ -109,7 +122,7 @@ public class B64ServiceTest {
         assertThat(node.hasRightData());
 
         b64Service.clearNodesMap();
-        assertThat(nodesRepository.findNodeById(3l)).isNull();
+        assertThat(b64Service.retrieveNodes().isEmpty());
     }
 
 
